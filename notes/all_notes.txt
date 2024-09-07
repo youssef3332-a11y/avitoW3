@@ -1,0 +1,62 @@
+**to install truffle : npm install -g truffle  to check: truffle version
+** truffle init: to create a new project
+   truffle can compile , deploy , test and migrate the smart contracts
+   to run truffle tests: truffle test. the tests are in the test folder
+   steps:
+        Develop Contracts: Write Solidity code in the contracts/ directory.
+        Compile Contracts: Use truffle compile to generate bytecode and ABI.
+        Write Migrations: Create migration scripts in the migrations/ directory to handle deployments.
+        Deploy Contracts: Use truffle migrate to deploy contracts to the configured network.
+        Test Contracts: Execute tests using truffle test to ensure correctness.
+        Interact with Contracts: Use truffle console or scripts to interact with deployed contracts.
+        Deploy to Other Networks: Configure network settings and deploy to testnets or mainnet.
+            ->in truffle-config.js we can change the network settings to use ganache local blockchain:
+               development: {
+                      host: "127.0.0.1",     // Localhost (default: none)
+                      port: 7545,            // Standard Ethereum port (default: none)
+                      network_id: "*",       // Any network (default: none)
+                },
+***mocha is the test framework for truffle
+
+***What is an ABI (Application Binary Interface)?
+Definition: The ABI is a JSON representation of your smart contract's methods and events. It acts as a bridge between your JavaScript code and the compiled smart contract on the Ethereum blockchain.
+Purpose: When you interact with a smart contract from a frontend application, the ABI tells your application what functions are available in the contract, what arguments those functions require, and what data types to expect in return.
+Contents: The ABI includes details like function names, input/output types, and events. It's necessary for encoding data to be sent to the blockchain and decoding the data received from the blockchain.
+
+**know the frontend code for interacting with the contract:
+   npm create vite@latest frontend --template react
+
+**storing only the ABI files in your frontend project:
+   contracts_build_directory: 'frontend/abis',
+   in truffle-config.js
+
+***if you plan to detect the MetaMask provider in your application,
+you should install @metamask/detect-provider
+npm install @metamask/detect-provider
+then npm install web3
+
+
+***Read Methods (e.g., count()): No gas fees. Use .call() to invoke these methods.
+Write Methods (e.g., createProduct(name, price)): Requires gas fees. Use .send() to invoke these methods.
+When you use methods like count(), you're merely querying data,
+so no fee is incurred. However, for methods that modify the blockchain,
+you need to be aware of and cover the transaction fees associated with the network's gas prices.
+
+
+****deploy to a testnet:
+npm install @truffle/hdwallet-provider
+lien : https://www.infura.io/blog/post/getting-started-with-infura-28e41844cc89
+
+Define Environment Variables: To avoid hardcoding sensitive information like your Infura API key or mnemonic (your wallet's seed phrase), you should store them in a .env file.
+
+Install dotenv package: In your project directory, run the following command to install the dotenv package, which will allow you to load environment variables from a .env file:
+
+bash
+Copy code
+npm install dotenv
+Create a .env file: In the root of your project (C:\Users\youss\Desktop\avitoweb3), create a .env file and add your Infura API key and mnemonic (seed phrase):
+
+bash
+Copy code
+INFURA_API_KEY=your-infura-api-key
+MNEMONIC="your-mnemonic-phrase"
