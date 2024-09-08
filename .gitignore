@@ -2,3 +2,4 @@
 .env
 contracts/
 frontend/abis
+frontend/src/backup.jsx

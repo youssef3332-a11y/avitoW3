@@ -2,6 +2,7 @@ import detectEthereumProvider from '@metamask/detect-provider'
 import Web3 from 'web3'
 import { useState, useEffect, useRef } from 'react'
 import WrongNetwork from './wrongNetwork'
+import Modal from 'react-modal'; // Ensure you import Modal
 import './App.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -16,7 +17,10 @@ function Connect_metamask2() {
     const [isWrongNetwork, setIsWrongNetwork] = useState(false); // New state for network status
     const listenerSet = useRef(false); // Ref to track if listener is set
     const listenerwallet = useRef(false); // Ref to track if wallet is connected
-
+    const [ModalIsOpen1, setModalIsOpen1] = useState(false); // New state for modal
+    const [ModalIsOpen2, setModalIsOpen2] = useState(false); // New state for modal
+    const [transactionAddLink, setTransactionAddLink] = useState(''); // New state for transaction add link
+    const [transactionBuyLink, setTransactionBuyLink] = useState(''); // New state for transaction buy link
     /*this function is used to connect to the metamask wallet but if you refresh the page you lose the values but still connected */
     /*The issue you're encountering is due to the fact that the state in React (wallet in this case) is not persisted across page refreshes.
     When you refresh the page, all React state is reset,
@@ -239,6 +243,8 @@ function Connect_metamask2() {
                 description: ''
             })
             setShowAddProduct(false)
+            setModalIsOpen1(true);
+            setTransactionAddLink(`https://etherscan.io/tx/${transaction.transactionHash}`);
 
 
         } catch (error) {
@@ -304,7 +310,6 @@ function Connect_metamask2() {
             const gasEstimate = await contract.methods.purchaseProduct(productId).estimateGas({ from: wallet, value: price });
 
             const transaction = await contract.methods.purchaseProduct(productId).send({ from: wallet, value: price, gas: gasEstimate });
-            console.log('Transaction Hash:', transaction.transactionHash);
             toast.success('Product purchased successfully!', {
                 position: "top-left",
                 autoClose: 5000,
@@ -315,6 +320,8 @@ function Connect_metamask2() {
                 progress: undefined,
                 theme: "light",
             });
+            setModalIsOpen2(true);
+            setTransactionBuyLink(`https://etherscan.io/tx/${transaction.transactionHash}`);
 
         } catch (error) {
             toast.error('Error buying product', {
@@ -453,6 +460,71 @@ function Connect_metamask2() {
                                 ></textarea>
                             </div>
                             <button type="button" className="btn btn-success mt-3" onClick={addProduct}>Add Product</button>
+                            <Modal isOpen={modalIsOpen1} onRequestClose={() => setModalIsOpen1(false)} 
+                                style={{
+                                    content: {
+                                        top: '50%',
+                                        left: '50%',
+                                        right: 'auto',
+                                        bottom: 'auto',
+                                        transform: 'translate(-50%, -50%)',
+                                        padding: '30px',
+                                        textAlign: 'center',
+                                        border: 'none',
+                                        borderRadius: '10px',
+                                        boxShadow: '0 4px 15px rgba(0, 0, 0, 0.2)',
+                                        width: '80%',
+                                        maxWidth: '600px',
+                                        height: 'auto',
+                                        maxHeight: '80vh',
+                                        overflowY: 'auto',
+                                        backgroundColor: '#e0e0e0',
+                                    },
+                                    overlay: {
+                                        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+                                    }
+                                }}
+                            > 
+                                <h2 style={{ color: '#333', marginBottom: '20px' }}>you can check the transaction on etherscan</h2>
+                                <a
+                                    href={transactionAddLink}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <button 
+                                        style={{
+                                            backgroundColor: '#4CAF50',
+                                            color: '#fff',
+                                            border: 'none',
+                                            padding: '10px 20px',
+                                            borderRadius: '5px',
+                                            cursor: 'pointer',
+                                            marginRight: '10px',
+                                            fontSize: '16px',
+                                            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                                        }}
+                                        onClick={() => setModalIsOpen1(false)}
+                                    >
+                                        Go to Transaction
+                                    </button>
+                                </a>
+                                <button 
+                                    style={{
+                                        backgroundColor: '#f44336',
+                                        color: '#fff',
+                                        border: 'none',
+                                        padding: '10px 20px',
+                                        borderRadius: '5px',
+                                        cursor: 'pointer',
+                                        fontSize: '16px',
+                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.2)',
+                                    }}
+                                    onClick={() => setModalIsOpen1(false)}
+                                >
+                                    Close
+                                </button>
+                            </Modal>
                         </div>
                     )}
                     
@@ -470,9 +542,11 @@ function Connect_metamask2() {
                                         <p className="card-text">Price: {Web3.utils.fromWei(product.price, 'ether')} ETH</p>
                                         <p className="card-text small">Seller: {product.owner.slice(0, 6)}...{product.owner.slice(-4)}</p>
                                         <button className="btn btn-primary btn-sm" onClick={() => buyProduct(product.id, product.price, product.owner)}>Buy product</button>
+                                        
                                     </div>
                                 </div>
                             ))}
+                            
                         </div>
                     </div>
                     
@@ -494,6 +568,7 @@ function Connect_metamask2() {
                             ))}
                         </div>
                     </div>
+
                 </div>
             )}
         </>
