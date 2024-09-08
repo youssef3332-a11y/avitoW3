@@ -20,7 +20,7 @@ function Connect_metamask() {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [transactionLink, setTransactionLink] = useState('');
     const [buyModalIsOpen, setBuyModalIsOpen] = useState(false); // New state for buy modal
-    
+    const [loading, setLoading] = useState(false);
 
     Modal.setAppElement('#root');
     /*this function is used to connect to the metamask wallet but if you refresh the page you lose the values but still connected */
@@ -55,7 +55,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -80,7 +80,7 @@ function Connect_metamask() {
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover: true,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
@@ -101,7 +101,7 @@ function Connect_metamask() {
                             autoClose: 5000,
                             hideProgressBar: false,
                             closeOnClick: true,
-                            pauseOnHover: true,
+                            pauseOnHover: false,
                             draggable: true,
                             progress: undefined,
                             theme: "light",
@@ -113,7 +113,7 @@ function Connect_metamask() {
                             autoClose: 5000,
                             hideProgressBar: false,
                             closeOnClick: true,
-                            pauseOnHover: true,
+                            pauseOnHover: false,
                             draggable: true,
                             progress: undefined,
                             theme: "light",
@@ -126,6 +126,7 @@ function Connect_metamask() {
 
     useEffect(() => {
         const loadContract = async () => {
+            setLoading(true);
             const web3 = new Web3(window.ethereum)
             const contractFile = await fetch('/abis/Shop.json')
             const contractJson = await contractFile.json()
@@ -141,6 +142,7 @@ function Connect_metamask() {
             else {
                 setIsWrongNetwork(true); // Set network status to wrong
             }
+            setLoading(false);
         }
         const addNetworkListener = async () => {
             if (typeof window !== 'undefined' && typeof window.ethereum !== 'undefined') {
@@ -167,7 +169,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -180,7 +182,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -194,7 +196,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -207,7 +209,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -227,11 +229,11 @@ function Connect_metamask() {
                 productInputs.description
             ).send({ from: wallet, gas: gasEstimate });
             toast.success('Product added successfully!', {
-                position: "top-center",
+                position: "top-left",
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover: true,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
@@ -256,7 +258,7 @@ function Connect_metamask() {
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover: true,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
@@ -275,7 +277,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -288,7 +290,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -301,7 +303,7 @@ function Connect_metamask() {
                     autoClose: 5000,
                     hideProgressBar: false,
                     closeOnClick: true,
-                    pauseOnHover: true,
+                    pauseOnHover: false,
                     draggable: true,
                     progress: undefined,
                     theme: "light",
@@ -312,13 +314,13 @@ function Connect_metamask() {
             const gasEstimate = await contract.methods.purchaseProduct(productId).estimateGas({ from: wallet, value: price });
 
             const transaction = await contract.methods.purchaseProduct(productId).send({ from: wallet, value: price, gas: gasEstimate });
-            console.log('Transaction Hash:', transaction.transactionHash);
+            
             toast.success('Product purchased successfully!', {
                 position: "top-left",
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover: true,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
@@ -334,7 +336,7 @@ function Connect_metamask() {
                 autoClose: 5000,
                 hideProgressBar: false,
                 closeOnClick: true,
-                pauseOnHover: true,
+                pauseOnHover: false,
                 draggable: true,
                 progress: undefined,
                 theme: "light",
@@ -351,6 +353,7 @@ function Connect_metamask() {
         const loadExistingProducts = async () => {
             if (contract) {
                 try {
+                    setLoading(true);
                     const productCount = await contract.methods.count().call();
                     const loadedProducts = [];
                     const loadedSoldProducts = [];
@@ -364,6 +367,7 @@ function Connect_metamask() {
                     }
                     setProducts(loadedProducts);
                     setSoldProducts(loadedSoldProducts);
+                    setLoading(false);
                 } catch (error) {
                     console.error("Error loading existing products:", error);
                 }
@@ -407,6 +411,15 @@ function Connect_metamask() {
                 <WrongNetwork />
             ) : (
                 <div className="App">
+                    {loading ? (
+                        <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: '100vh' }}>
+                            <div className="spinner-border text-primary" role="status" style={{ width: '3rem', height: '3rem' }}>
+                                <span className="visually-hidden">Loading...</span>
+                            </div>
+                            <p className="mt-3">Loading products, please wait...</p>
+                        </div>
+                    ) : (
+                        <>
                     <nav className="navbar bg-dark fixed-top">
                         <div className="container-fluid">
                             <div className="d-flex align-items-center">
@@ -638,6 +651,8 @@ function Connect_metamask() {
                             Close
                         </button>
                     </Modal>
+                    </>
+                    )}
                 </div>
             )}
         </>
