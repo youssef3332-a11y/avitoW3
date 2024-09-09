@@ -6,6 +6,7 @@ import './App.css'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Modal from 'react-modal';
+import Shop from '/../abis/Shop.json'
 
 function Connect_metamask() {
     const [wallet, setWallet] = useState(null)
@@ -128,11 +129,12 @@ function Connect_metamask() {
         const loadContract = async () => {
             setLoading(true);
             const web3 = new Web3(window.ethereum)
-            const contractFile = await fetch('/abis/Shop.json')
-            const contractJson = await contractFile.json()
-            const abi = contractJson.abi
+            //const contractFile = await fetch('/abis/Shop.json')
+            //const contractJson = await contractFile.json()
+            //const abi = contractJson.abi
+            const abi = Shop.abi
             const networkId = await web3.eth.net.getId()
-            const networkObject = contractJson.networks[networkId]
+            const networkObject = Shop.networks[networkId]
             if (networkObject) {
                 const contractAddress = networkObject.address
                 const contract = new web3.eth.Contract(abi, contractAddress)
