@@ -240,7 +240,7 @@ function Connect_metamask() {
 
             });
 
-            //clear the input fields
+            // Clear the input fields and open the modal
             setProductInputs({
                 name: '',
                 price: 0,
@@ -248,7 +248,7 @@ function Connect_metamask() {
             })
             setShowAddProduct(false)
             setModalIsOpen(true);
-            setTransactionLink(`https://etherscan.io/tx/${transaction.transactionHash}`);
+            setTransactionLink(`https://sepolia.etherscan.io/tx/${transaction.transactionHash}`);
 
 
         } catch (error) {
@@ -327,7 +327,7 @@ function Connect_metamask() {
             });
 
             // Set transaction link and open modal
-            setTransactionLink(`https://etherscan.io/tx/${transaction.transactionHash}`);
+            setTransactionLink(`https://sepolia.etherscan.io/tx/${transaction.transactionHash}`);
             setBuyModalIsOpen(true);
 
         } catch (error) {
@@ -381,7 +381,11 @@ function Connect_metamask() {
                 eventSubscription = await contract.events.createdProduct({})
                     .on('data', async (event) => {
                         const newProduct = event.returnValues;
-                        setProducts(prevProducts => [...prevProducts, newProduct]);
+                        setProducts(prevProducts => {
+                            if(prevProducts.some(product => product.id === newProduct.id)){
+                                return prevProducts
+                            }
+                            return [...prevProducts, newProduct]});
                     });
 
                 await contract.events.purshasedProduct({})
