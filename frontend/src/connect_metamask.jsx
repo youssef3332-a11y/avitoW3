@@ -414,7 +414,7 @@ function Connect_metamask() {
         <>
             <ToastContainer />
             {isWrongNetwork ? (
-                <WrongNetwork />
+                <WrongNetwork isMetamaskInstalled={window.ethereum}/>
             ) : (
                 <div className="App">
                     {loading ? (
@@ -430,7 +430,7 @@ function Connect_metamask() {
                         <div className="container-fluid">
                             <div className="d-flex align-items-center">
                                 <a className="navbar-brand text-white me-1">
-                                    <img src="src/assets/final_logo.png" alt="Logo" style={{height: '30px', width: 'auto', borderRadius: '50%'}}/>
+                                    <img src="/final_logo.png" alt="Logo" style={{height: '30px', width: 'auto', borderRadius: '50%'}}/>
                                 </a>
                                 <a className="navbar-brand ms-0">
                                     <span style={{ color: 'white' }}>avito</span>
